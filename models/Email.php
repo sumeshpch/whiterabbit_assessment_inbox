@@ -4,11 +4,16 @@ namespace app\models;
 
 use app\core\Container;
 
+require_once APP_PATH . '/models/Users.php';
+
 class Email extends \app\core\Model {
 
     public function listEmails() {
         $data = $this->getRequest()->getFilteredData();
         $dbReader = Container::getService('dbReader');
+        $dbWriter = Container::getService('dbWriter');
+
+        $userId = \app\models\Users::getUserId();
 
         $pageNo = (empty($data['page'])) ? "0" : $data['page'];
         $start = ($pageNo != '') ? ($pageNo) * MANAGE_MAX_ROWS : '0';
@@ -38,14 +43,21 @@ class Email extends \app\core\Model {
             while ($row = $rs->fetch()) {
                 $emails[] = $row;
             }
+
+            //log activity
+            $dbWriter->execute("INSERT INTO `user_activity` (`userId`) VALUES ('" . $userId . "')");
         }
         $rs->close();
+        $dbWriter->close();
         //pre($emails);exit;
         return $emails;
     }
 
     public function getEmail($mailId = 0) {
         $dbReader = Container::getService('dbReader');
+        $dbWriter = Container::getService('dbWriter');
+
+        $userId = \app\models\Users::getUserId();
 
         $query = "SELECT `mailId`, `subject`, `date`, `from`, `body` FROM `emails` WHERE `mailId` = '" . $mailId . "'";
 
@@ -57,8 +69,12 @@ class Email extends \app\core\Model {
         if ($totalEmails > 0) {
             $row = $rs->fetch();
             $email = $row;
+
+            //log activity
+            $dbWriter->execute("INSERT INTO `user_activity` (`mailId`, `userId`, `action`) VALUES ('" . $mailId . "', '" . $userId . "', 'read')");
         }
         $rs->close();
+        $dbWriter->close();
 
         return $email;
     }
@@ -67,14 +83,21 @@ class Email extends \app\core\Model {
         $data = $this->getRequest()->getFilteredData();
         $dbWriter = Container::getService('dbWriter');
 
+        $userId = \app\models\Users::getUserId();
+
         $query = "DELETE FROM `emails` WHERE `mailId` = '" . $data['mailId'] . "'";
 
         $imap = Container::getService('imap');
         $status = $imap->deleteEmail($data['mailId']);
         if ($status) {
             $dbWriter->execute($query);
+
+            //log activity
+            $dbWriter->execute("INSERT INTO `user_activity` (`mailId`, `userId`, `action`) VALUES ('" . $data['mailId'] . "', '" . $userId . "', 'delete')");
+
             return true;
         }
+        $dbWriter->close();
         return false;
     }
 

@@ -21,6 +21,7 @@ require_once APP_PATH . '/core/Model.php';
 require_once APP_PATH . '/core/Request.php';
 require_once APP_PATH . '/core/Response.php';
 
+require_once APP_PATH . '/core/Session.php';
 require_once APP_PATH . '/conf/services.php';   // Including the configs
 require_once APP_PATH . '/core/ErrorHandler.php';
 require_once APP_PATH . '/core/WRException.php';

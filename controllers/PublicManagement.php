@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use app\core\WRException;
 
-require_once APP_PATH . '/models/email.php';
+require_once APP_PATH . '/models/Email.php';
 
 class PublicManagement extends \app\core\Controller {
 

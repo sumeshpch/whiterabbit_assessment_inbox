@@ -18,11 +18,14 @@ class Crons extends \app\core\Model {
         $truncateQuery = "TRUNCATE `emails`";
         $dbWriter->execute($truncateQuery);
 
+        $count = 0;
         $emails = $imap->retrieveAll();
-        if (count($emails) > 0) {
+        if (is_array($emails)) {
+
+            $count = count($emails);
 
             $mails = [];
-            $query = "INSERT INTO `emails`(`mailId`, `subject`, `body`, `status`, `from`, `to`, `cc`, `bcc`, `date`) VALUES ";
+            $query = "INSERT INTO `emails`(`mailId`, `subject`, `body`, `status`, `from`, `to`, `date`) VALUES ";
 
             foreach ($emails as $email_number) {
                 $imap->setAsSeen($email_number);
@@ -45,7 +48,11 @@ class Crons extends \app\core\Model {
 
             $query .= implode(",", $mails);
             $dbWriter->execute($query);
+
+            //log activity
+            $dbWriter->execute("INSERT INTO `system_activity` (`updateCount`) VALUES ('" . $count . "')");
         }
+        $dbWriter->close();
         return true;
     }
 
@@ -58,11 +65,13 @@ class Crons extends \app\core\Model {
         $logger->info($message);
         echo "\n";
 
+        $count = 0;
         $emails = $imap->retrieveUnseen();
-        if (count($emails) > 0) {
+        if (is_array($emails)) {
 
-            $mails = [];
-            $query = "INSERT INTO `emails`(`mailId`, `subject`, `body`, `status`, `from`, `to`, `cc`, `bcc`, `date`) VALUES ";
+            $count = count($emails);
+
+            $query = "INSERT INTO `emails`(`mailId`, `subject`, `body`, `status`, `from`, `to`, `date`) VALUES ";
 
             foreach ($emails as $email_number) {
                 $overview = $imap->fetchOverview($email_number);
@@ -84,6 +93,9 @@ class Crons extends \app\core\Model {
                 }
             }
         }
+        //log activity
+        $dbWriter->execute("INSERT INTO `system_activity` (`action`, `updateCount`) VALUES ('fetchLatest', '" . $count . "')");
+        $dbWriter->close();
         return true;
     }
 

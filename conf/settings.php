@@ -26,6 +26,10 @@ define('WR_SLAVE_DB_USER', "root");
 define('WR_SLAVE_DB_PASSWORD', "dezire");
 
 define('MANAGE_MAX_ROWS', 50);
+define('COOKIE_SECRET_KEY', "WHITERABBIT");
+define('COOKIE_EXPIRY_TIME', "");
+define('COOKIE_PATH', "");
+define('COOKIE_DOMAIN', "");
 
 /**
  * stop

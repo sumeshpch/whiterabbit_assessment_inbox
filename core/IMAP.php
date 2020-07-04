@@ -20,7 +20,9 @@ class IMAP {
 
     public function retrieveAll() {
         $emails = imap_search($this->connection, 'ALL');
-        rsort($emails);
+
+        if ($emails)
+            rsort($emails);
 
         return $emails;
     }
@@ -31,7 +33,9 @@ class IMAP {
 
     public function retrieveUnseen() {
         $emails = imap_search($this->connection, 'UNSEEN');
-        rsort($emails);
+
+        if ($emails)
+            rsort($emails);
 
         return $emails;
     }
