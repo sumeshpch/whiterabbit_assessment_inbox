@@ -15,8 +15,8 @@ class Email extends \app\core\Model {
 
         $userId = \app\models\Users::getUserId();
 
-        $pageNo = (empty($data['page'])) ? "0" : $data['page'];
-        $start = ($pageNo != '') ? ($pageNo) * MANAGE_MAX_ROWS : '0';
+        $pageNo = (empty($data['page'])) ? 1 : $data['page'];
+        $start = ($pageNo - 1) * MANAGE_MAX_ROWS;
 
         $where = "WHERE 1";
         if ($data['email']) {
@@ -50,6 +50,8 @@ class Email extends \app\core\Model {
         $rs->close();
         $dbWriter->close();
         //pre($emails);exit;
+
+        $this->pageNo = $pageNo;
         return $emails;
     }
 

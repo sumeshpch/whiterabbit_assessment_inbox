@@ -25,7 +25,7 @@ define('WR_SLAVE_DB_HOST', "localhost");
 define('WR_SLAVE_DB_USER', "root");
 define('WR_SLAVE_DB_PASSWORD', "dezire");
 
-define('MANAGE_MAX_ROWS', 50);
+define('MANAGE_MAX_ROWS', 10);
 define('COOKIE_SECRET_KEY', "WHITERABBIT");
 define('COOKIE_EXPIRY_TIME', "");
 define('COOKIE_PATH', "");

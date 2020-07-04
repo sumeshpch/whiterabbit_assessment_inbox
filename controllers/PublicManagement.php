@@ -11,6 +11,9 @@ class PublicManagement extends \app\core\Controller {
     public function listEmails() {
         $emailObj = new \app\models\Email(['request' => $this->getRequest()]);
         $data = $emailObj->listEmails();
+
+        $this->setData("totalPages", $emailObj->totalPages);
+        $this->setData("pageNo", $emailObj->pageNo);
         $this->setData('data', $data);
 
         $this->view = APP_PATH . '/views/email/list.tpl.php';
