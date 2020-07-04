@@ -11,7 +11,7 @@ class IMAP {
         try {
             if (function_exists('imap_open')) {
                 /* Connecting Gmail server with IMAP */
-                $this->connection = imap_open('{imap.gmail.com:993/imap/ssl}INBOX', 'harveyspect60@gmail.com', 'zwukybktspqnzwqk') or die('Cannot connect to Gmail: ' . imap_last_error());
+                $this->connection = imap_open('{imap.gmail.com:993/imap/ssl}INBOX', SMTP_EMAIL_USERNAME, SMTP_EMAIL_PASSWORD) or die('Cannot connect to Gmail: ' . imap_last_error());
             }
         } catch (Exception $e) {
             die('Cannot connect to Gmail');
