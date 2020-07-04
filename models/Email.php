@@ -29,6 +29,7 @@ class Email extends \app\core\Model {
         $countQuery = "SELECT COUNT(*) AS `count` FROM `emails`" . $where;
         $rsCount = $dbReader->query($countQuery);
         $rowCount = $rsCount->fetch();
+        $this->totalEmails = $rowCount['count'];
         $this->totalPages = ceil($rowCount['count'] / MANAGE_MAX_ROWS);
         $rsCount->close();
 
@@ -45,7 +46,7 @@ class Email extends \app\core\Model {
             }
 
             //log activity
-            $dbWriter->execute("INSERT INTO `user_activity` (`userId`) VALUES ('" . $userId . "')");
+            $dbWriter->execute("INSERT INTO `user_activity` (`userId`, `search`, `emailSearched`) VALUES ('" . $userId . "', '" . $data['search'] . "', '" . $data['email'] . "')");
         }
         $rs->close();
         $dbWriter->close();
